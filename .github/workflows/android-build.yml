@@ -22,13 +22,11 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
-    # الحل الحاسم: منح صلاحية التنفيذ للملف الخارجي والملف الداخلي التابع للحاضن معاً
     - name: Grant Execute Permission for All Gradle Scripts
       run: |
         chmod +x gradlew
-        chmod +x gradle/wrapper/gradlew
+        chmod +x gradle/wrapper/gradle-wrapper.jar
 
-    # الآن سيتم تشغيل البناء بسلاسة مطلقة
     - name: Compile and Build Debug APK
       run: ./gradlew assembleDebug
 
