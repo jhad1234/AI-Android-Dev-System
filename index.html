@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autonomous Agentic OS Console</title>
+    <style>
+        :root {
+            --bg-color: #0d0f12;
+            --panel-color: #161b22;
+            --accent-color: #00ff66;
+            --text-color: #c9d1d9;
+            --error-color: #ff3333;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            height: 95vh;
+        }
+        h2 {
+            color: #fff;
+            border-bottom: 2px solid var(--panel-color);
+            padding-bottom: 8px;
+            margin-top: 0;
+        }
+        #console-log {
+            flex-grow: 1;
+            background-color: #000;
+            border: 1px solid var(--panel-color);
+            padding: 12px;
+            overflow-y: auto;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            box-shadow: inset 0 0 10px rgba(0, 255, 102, 0.1);
+        }
+        .log-entry {
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+        .system { color: var(--accent-color); }
+        .user { color: #58a6ff; }
+        .governor { color: var(--error-color); }
+        
+        .input-area {
+            display: flex;
+            gap: 8px;
+        }
+        input[type="text"] {
+            flex-grow: 1;
+            background-color: var(--panel-color);
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #fff;
+            padding: 12px;
+            font-size: 16px;
+            outline: none;
+        }
+        input[type="text"]:focus {
+            border-color: var(--accent-color);
+        }
+        button {
+            background-color: #238636;
+            color: #fff;
+            border: none;
+            padding: 0 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover { background-color: #2ea043; }
+    </style>
+</head>
+<body>
+
+    <h2>📱 Autonomous Agentic OS — v2.0</h2>
+    
+    <div id="console-log">
+        <div class="log-entry system">[النظام] النواة المركزية (Kernel AI Core) قيد التشغيل والتحضير...</div>
+        <div class="log-entry system">[النظام] صمام الأمان والـ Watchdog مراقبة الاستقرار نشط وثابت ومحمي.</div>
+    </div>
+
+    <div class="input-area">
+        <input type="text" id="cmd-input" placeholder="أدخل أمر التطوير أو الأتمتة المباشر للنظام..." onkeypress="handleKeyPress(event)">
+        <button onclick="processCommand()">إرسال</button>
+    </div>
+
+    <script>
+        const consoleLog = document.getElementById('console-log');
+        const cmdInput = document.getElementById('cmd-input');
+
+        function appendLog(sender, message, typeClass) {
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${typeClass}`;
+            entry.innerText = `[${sender}] ${message}`;
+            consoleLog.appendChild(entry);
+            consoleLog.scrollTop = consoleLog.scrollHeight;
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') processCommand();
+        }
+
+        // محاكاة حية لنواة الـ Kernel AI Core ونظام الحوكمة (AI Governor)
+        function processCommand() {
+            const prompt = cmdInput.value.trim();
+            if (!prompt) return;
+
+            appendLog('المطور', prompt, 'user');
+            cmdInput.value = '';
+
+            // 1. فحص سياسات الأمان والحوكمة (AI Governor Policy Check)
+            const dangerousKeywords = ["rm -rf", "drop table", "disable security", "حذف النظام"];
+            const isDangerous = dangerousKeywords.some(keyword => prompt.toLowerCase().includes(keyword));
+
+            setTimeout(() => {
+                if (isDangerous) {
+                    appendLog('AI Governor', 'تم حظر العملية فوراً! الأمر المكتوب غير آمن ويشكل خطراً على استقرار النظام والملفات.', 'governor');
+                    return;
+                }
+
+                appendLog('Kernel Core', 'جاري تحليل المعطيات وتفكيك الأمر وتفويض العمل للوكلاء الذكيين...', 'system');
+                
+                // 2. تفويض العمل للـ Coder Agent ومحرك التحديث الساخن
+                setTimeout(() => {
+                    if (prompt.includes("تعديل") || prompt.includes("اكتب") || prompt.includes("تطوير")) {
+                        appendLog('Coder Agent', 'تم توليد الرقعة البرمجية (Code Patch) بنجاح والموافقة عليها من قبل الـ QA.', 'system');
+                        appendLog('Dynamic Loader', 'تم حقن التحديث الساخن وتطوير النظام حياً في الذاكرة الساخنة بدون كاش مكسور!', 'system');
+                    } else {
+                        appendLog('Sys-Admin Agent', 'تم أتمتة المهمة المطلوبة، وجدولة العمليات، وتوزيع الأحمال بنجاح.', 'system');
+                    }
+                }, 1200);
+
+            }, 600);
+        }
+    </script>
+</body>
+</html>
