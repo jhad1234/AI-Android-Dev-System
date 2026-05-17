@@ -1,47 +1,72 @@
-name: Android AI-OS CI/CD Build Engine
+name: Build Android APK Automatically
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
+      - master
+
+permissions:
+  contents: write
 
 jobs:
   build:
-    name: Compile and Generate Installation APK
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout Source Code
       uses: actions/checkout@v4
 
-    - name: Set up JDK 17 (Required for modern Android Builds)
+    - name: Set up Java Environment
       uses: actions/setup-java@v4
       with:
+        distribution: 'zulu'
         java-version: '17'
-        distribution: 'temurin'
-        cache: gradle
 
-    # الحل العبقري: تجديد وتوليد ملفات الـ Wrapper والـ Jar ثنائية المفعول داخل السيرفر تلقائياً
-    - name: Download and Regenerate Missing Gradle Wrapper Jar
-      run: |
-        wget https://services.gradle.org/distributions/gradle-8.4-bin.zip
-        unzip -q gradle-8.4-bin.zip
-        mv gradle-8.4/lib/plugins/gradle-plugins-*.jar ./ 2>/dev/null || true
-        gradle wrapper --gradle-version 8.4
-
-    # منح صلاحيات التشغيل للملفات التي تم توليدها وتحديثها فوراً
-    - name: Grant Execute Permission for All Gradle Scripts
-      run: |
-        find . -name "gradlew" -exec chmod +x {} +
-
-    # التجميع الحقيقي والنهائي للتطبيق بعد اكتمال البيئة الهندسية
-    - name: Compile and Build Debug APK
-      run: ./gradlew assembleDebug
-
-    - name: Upload Real Installation APK Artifact
-      uses: actions/upload-artifact@v4
+    - name: Set up Flutter Engine
+      uses: subosito/flutter-action@v2
       with:
-        name: AI-OS-Dynamic-Build
-        path: app/build/outputs/apk/debug/app-debug.apk
-        retention-days: 7
+        flutter-version: '3.19.x'
+        channel: 'stable'
+
+    # تخطي الأخطاء في حال كان المشروع أندرويد نيتف (Native) عبر جلب المكونات تلقائياً
+    - name: Get Dependencies and Packages
+      run: |
+        if [ -f "pubspec.yaml" ]; then
+          flutter pub get
+        else
+          echo "Native project detected or fallback initialization..."
+        fi
+
+    # بناء الحزمة الشاملة لكافة معماريات الهواتف (arm, arm64, x64)
+    - name: Build APK for All Devices
+      run: |
+        if [ -f "pubspec.yaml" ]; then
+          flutter build apk --release --target-platform android-arm,android-arm64,android-x64
+        else
+          # إذا لم يجد فلاتر، يقوم بالبناء عبر محرك أندرويد المدمج بأمان
+          chmod +x gradlew || true
+          ./gradlew assembleDebug
+        fi
+
+    # التحقق الذكي من المخرجات وتوجيه الملف للرفع
+    - name: Verify APK Output and Prepare Artifact
+      run: |
+        mkdir -p output-apk/
+        if [ -f "build/app/outputs/flutter-apk/app-release.apk" ]; then
+          cp build/app/outputs/flutter-apk/app-release.apk output-apk/AI-OS-App.apk
+        elif [ -f "app/build/outputs/apk/debug/app-debug.apk" ]; then
+          cp app/build/outputs/apk/debug/app-debug.apk output-apk/AI-OS-App.apk
+        else
+          echo "لم يتم العثور على ملف APK الناتج."
+          exit 1
+        fi
+
+    # السحر الحقيقي: إنشاء إصدار رسمي (Release) برابط تثبيت مباشر دائم في مستودعك!
+    - name: Update Release and Upload Installation APK
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: "v2.0.0-build"
+        name: "تطبيق الأندرويد الجاهز (تحديث تلقائي) 📱"
+        body: "تم بناء نظام التشغيل الوكيل الذكي وتحديثه تلقائياً بواسطة خوادم GitHub Actions وهو متوافق مع كافة أجهزة الأندرويد."
+        files: output-apk/AI-OS-App.apk
