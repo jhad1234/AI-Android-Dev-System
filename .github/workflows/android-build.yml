@@ -22,13 +22,15 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
-    - name: Grant Execute Permission for All Gradle Scripts
+    # فحص ذكي: يمنح الصلاحية للملفات الموجودة فعلياً فقط ولا يسبب أي انهيار إذا اختفى الـ jar
+    - name: Grant Execute Permission for Existing Scripts
       run: |
-        chmod +x gradlew
-        chmod +x gradle/wrapper/gradle-wrapper.jar
+        if [ -f "./gradlew" ]; then chmod +x ./gradlew; fi
+        if [ -f "./gradle/wrapper/gradlew" ]; then chmod +x ./gradle/wrapper/gradlew; fi
 
+    # التجميع المباشر عبر الشل لتفادي أي جدار حماية سحابي
     - name: Compile and Build Debug APK
-      run: ./gradlew assembleDebug
+      run: sh gradlew assembleDebug
 
     - name: Upload Real Installation APK Artifact
       uses: actions/upload-artifact@v4
