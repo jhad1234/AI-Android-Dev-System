@@ -14,6 +14,10 @@ jobs:
     name: Compile Native Kotlin Application
     runs-on: ubuntu-latest
 
+    # حل التحذير: إجبار السيرفر على تشغيل البيئة الحديثة المتوافقة مع عام 2026
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
     steps:
     - name: Checkout Source Code
       uses: actions/checkout@v4
@@ -24,26 +28,28 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    # الأداة السحرية الرسمية: تهيئة بيئة أندرويد وتوليد الـ SDK ومكونات البناء تلقائياً في السيرفر
+    # تهيئة بيئة أندرويد الرسمية لبناء مشاريع الكوتلن
     - name: Set up Android SDK & Environment
       uses: android-actions/setup-android@v3
 
-    # توليد ملفات الـ Wrapper المحركة للبناء سحابياً من الصفر لتفادي النقص في مستودعك
+    # توليد ملف الـ Wrapper والـ Jar ثنائياً داخل السيرفر تلقائياً لتجنب أي نقص في مستودعك
     - name: Generate Official Gradle Wrapper
       run: gradle wrapper --gradle-version 8.4
 
-    - name: Grant Execute Permission for Gradle Scripts
-      run: chmod +x gradlew
+    # كسر قفل الحماية عن كافة ملفات التشغيل دفعة واحدة
+    - name: Grant Execute Permission for All Gradle Scripts
+      run: |
+        find . -name "gradlew" -exec chmod +x {} +
 
-    # بناء وتجميع الحزمة التنفيذية للتطبيق بنجاح
+    # تجميع وبناء الـ APK الحقيقي للنظام الذاتي
     - name: Compile and Build Debug APK
       run: ./gradlew assembleDebug
 
-    # إنشاء الإصدار الرسمي والرفع المباشر لصفحة الـ Releases
+    # السحر الحقيقي: توليد رابط تحميل مباشر وتلقائي وتثبيته فوراً من صفحة الـ Releases
     - name: Create Global Release and Upload APK
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: "v2.0.0-release"
+        tag_name: "Latest-AI-OS-Build"
         name: "تطبيق الأندرويد الجاهز (تحديث تلقائي) 📱"
-        body: "تم بناء نظام التشغيل الوكيل الذكي وتحديثه تلقائياً بواسطة خوادم GitHub Actions وهو متوافق مع كافة أجهزة الأندرويد."
+        body: "تم بناء نظام التشغيل الوكيل الذكي وتحديثه تلقائياً بواسطة خوادم GitHub Actions بنجاح."
         files: app/build/outputs/apk/debug/app-debug.apk
