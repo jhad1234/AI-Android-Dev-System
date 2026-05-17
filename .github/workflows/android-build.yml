@@ -22,12 +22,20 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
-    # الحل الهندسي المطلق: البحث عن جميع ملفات gradlew في المشروع ومنحها إذن التشغيل دفعة واحدة
+    # الحل العبقري: تجديد وتوليد ملفات الـ Wrapper والـ Jar ثنائية المفعول داخل السيرفر تلقائياً
+    - name: Download and Regenerate Missing Gradle Wrapper Jar
+      run: |
+        wget https://services.gradle.org/distributions/gradle-8.4-bin.zip
+        unzip -q gradle-8.4-bin.zip
+        mv gradle-8.4/lib/plugins/gradle-plugins-*.jar ./ 2>/dev/null || true
+        gradle wrapper --gradle-version 8.4
+
+    # منح صلاحيات التشغيل للملفات التي تم توليدها وتحديثها فوراً
     - name: Grant Execute Permission for All Gradle Scripts
       run: |
         find . -name "gradlew" -exec chmod +x {} +
 
-    # تشغيل محرك البناء المباشر بعد فك جميع الأقفال الداخلية والخارجية
+    # التجميع الحقيقي والنهائي للتطبيق بعد اكتمال البيئة الهندسية
     - name: Compile and Build Debug APK
       run: ./gradlew assembleDebug
 
