@@ -1,11 +1,38 @@
 #!/usr/bin/env sh
 
-# Core execution script for GitHub Actions Runner
-# This file bridges the task delegation from the workflow to the compiler.
+###############################################################################
+#
+#  Gradle startup script for UN*X
+#
+###############################################################################
 
-DIRNAME=$(dirname "$0")
-if [ -z "$DIRNAME" ]; then
-    DIRNAME="."
-fi
+# Attempt to set APP_HOME
+# Resolve links: $0 may be a link
+PRG="$0"
+# Need this for relative symlinks.
+while [ -h "$PRG" ] ; do
+    ls=`ls -ld "$PRG"`
+    link=`expr "$ls" : '.*-> \(.*\)$'`
+    if expr "$link" : '/.*' > /dev/null; then
+        PRG="$link"
+    else
+        PRG=`dirname "$PRG"`"/$link"
+    fi
+done
 
-exec "$DIRNAME/../../../gradlew" "$@"
+SAVED="`pwd`"
+cd "`dirname \"$PRG\"`/../.." >/dev/null
+APP_HOME="`pwd`"
+cd "$SAVED" >/dev/null
+
+APP_NAME="Gradle"
+APP_BASE_NAME=`basename "$0"`
+
+# Collect all arguments for the java command:
+#   the reason for not using an array is to maintain compatibility with plain sh
+DEFAULT_JVM_OPTS=""
+
+# Only define CLASSPATH if it's actually needed by the wrapper
+CLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar
+
+exec java $DEFAULT_JVM_OPTS -classpath "$CLASSPATH" org.gradle.wrapper.GradleWrapperMain "$@"
