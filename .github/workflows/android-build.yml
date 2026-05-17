@@ -22,13 +22,12 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
-    # فحص ذكي: يمنح الصلاحية للملفات الموجودة فعلياً فقط ولا يسبب أي انهيار إذا اختفى الـ jar
+    # تعديل الصياغة لتكون متوافقة تماماً مع خادم Ubuntu وتجنب أخطاء التفسير
     - name: Grant Execute Permission for Existing Scripts
       run: |
-        if [ -f "./gradlew" ]; then chmod +x ./gradlew; fi
-        if [ -f "./gradle/wrapper/gradlew" ]; then chmod +x ./gradle/wrapper/gradlew; fi
+        chmod +x ./gradlew || true
 
-    # التجميع المباشر عبر الشل لتفادي أي جدار حماية سحابي
+    # تشغيل البناء المباشر
     - name: Compile and Build Debug APK
       run: sh gradlew assembleDebug
 
