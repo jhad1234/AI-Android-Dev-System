@@ -11,62 +11,39 @@ permissions:
 
 jobs:
   build:
+    name: Compile Native Kotlin Application
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout Source Code
       uses: actions/checkout@v4
 
-    - name: Set up Java Environment
+    - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
-        distribution: 'zulu'
+        distribution: 'temurin'
         java-version: '17'
 
-    - name: Set up Flutter Engine
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.19.x'
-        channel: 'stable'
+    # الأداة السحرية الرسمية: تهيئة بيئة أندرويد وتوليد الـ SDK ومكونات البناء تلقائياً في السيرفر
+    - name: Set up Android SDK & Environment
+      uses: android-actions/setup-android@v3
 
-    # تخطي الأخطاء في حال كان المشروع أندرويد نيتف (Native) عبر جلب المكونات تلقائياً
-    - name: Get Dependencies and Packages
-      run: |
-        if [ -f "pubspec.yaml" ]; then
-          flutter pub get
-        else
-          echo "Native project detected or fallback initialization..."
-        fi
+    # توليد ملفات الـ Wrapper المحركة للبناء سحابياً من الصفر لتفادي النقص في مستودعك
+    - name: Generate Official Gradle Wrapper
+      run: gradle wrapper --gradle-version 8.4
 
-    # بناء الحزمة الشاملة لكافة معماريات الهواتف (arm, arm64, x64)
-    - name: Build APK for All Devices
-      run: |
-        if [ -f "pubspec.yaml" ]; then
-          flutter build apk --release --target-platform android-arm,android-arm64,android-x64
-        else
-          # إذا لم يجد فلاتر، يقوم بالبناء عبر محرك أندرويد المدمج بأمان
-          chmod +x gradlew || true
-          ./gradlew assembleDebug
-        fi
+    - name: Grant Execute Permission for Gradle Scripts
+      run: chmod +x gradlew
 
-    # التحقق الذكي من المخرجات وتوجيه الملف للرفع
-    - name: Verify APK Output and Prepare Artifact
-      run: |
-        mkdir -p output-apk/
-        if [ -f "build/app/outputs/flutter-apk/app-release.apk" ]; then
-          cp build/app/outputs/flutter-apk/app-release.apk output-apk/AI-OS-App.apk
-        elif [ -f "app/build/outputs/apk/debug/app-debug.apk" ]; then
-          cp app/build/outputs/apk/debug/app-debug.apk output-apk/AI-OS-App.apk
-        else
-          echo "لم يتم العثور على ملف APK الناتج."
-          exit 1
-        fi
+    # بناء وتجميع الحزمة التنفيذية للتطبيق بنجاح
+    - name: Compile and Build Debug APK
+      run: ./gradlew assembleDebug
 
-    # السحر الحقيقي: إنشاء إصدار رسمي (Release) برابط تثبيت مباشر دائم في مستودعك!
-    - name: Update Release and Upload Installation APK
+    # إنشاء الإصدار الرسمي والرفع المباشر لصفحة الـ Releases
+    - name: Create Global Release and Upload APK
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: "v2.0.0-build"
+        tag_name: "v2.0.0-release"
         name: "تطبيق الأندرويد الجاهز (تحديث تلقائي) 📱"
         body: "تم بناء نظام التشغيل الوكيل الذكي وتحديثه تلقائياً بواسطة خوادم GitHub Actions وهو متوافق مع كافة أجهزة الأندرويد."
-        files: output-apk/AI-OS-App.apk
+        files: app/build/outputs/apk/debug/app-debug.apk
