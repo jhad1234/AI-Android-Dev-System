@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+# Core execution script for GitHub Actions Runner
+# This file bridges the task delegation from the workflow to the compiler.
+
+DIRNAME=$(dirname "$0")
+if [ -z "$DIRNAME" ]; then
+    DIRNAME="."
+fi
+
+exec "$DIRNAME/../../../gradlew" "$@"
