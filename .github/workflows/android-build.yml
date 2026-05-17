@@ -14,7 +14,6 @@ jobs:
     name: Compile Native Kotlin Application
     runs-on: ubuntu-latest
 
-    # حل التحذير: إجبار السيرفر على تشغيل البيئة الحديثة المتوافقة مع عام 2026
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -32,24 +31,24 @@ jobs:
     - name: Set up Android SDK & Environment
       uses: android-actions/setup-android@v3
 
-    # توليد ملف الـ Wrapper والـ Jar ثنائياً داخل السيرفر تلقائياً لتجنب أي نقص في مستودعك
+    # التعديل الاستراتيجي: قسر الخادم على التوليد الحي بدون كاش خلفي مكسور
     - name: Generate Official Gradle Wrapper
-      run: gradle wrapper --gradle-version 8.4
+      run: gradle wrapper --gradle-version 8.4 --no-daemon
 
-    # كسر قفل الحماية عن كافة ملفات التشغيل دفعة واحدة
+    # كسر قفل الحماية عن كافة ملفات التشغيل المستحدثة
     - name: Grant Execute Permission for All Gradle Scripts
       run: |
         find . -name "gradlew" -exec chmod +x {} +
 
-    # تجميع وبناء الـ APK الحقيقي للنظام الذاتي
+    # التجميع الحقيقي والكامل للملف التنفيذي الحقيقي للتطبيق مع أمر التنظيف
     - name: Compile and Build Debug APK
-      run: ./gradlew assembleDebug
+      run: ./gradlew clean assembleDebug --no-daemon
 
-    # السحر الحقيقي: توليد رابط تحميل مباشر وتلقائي وتثبيته فوراً من صفحة الـ Releases
+    # إنشاء الإصدار الرسمي والرفع المباشر لصفحة الـ Releases
     - name: Create Global Release and Upload APK
       uses: softprops/action-gh-release@v2
       with:
         tag_name: "Latest-AI-OS-Build"
         name: "تطبيق الأندرويد الجاهز (تحديث تلقائي) 📱"
-        body: "تم بناء نظام التشغيل الوكيل الذكي وتحديثه تلقائياً بواسطة خوادم GitHub Actions بنجاح."
+        body: "تم بناء نظام التشغيل الوكيل الذكي وتحديثه تلقائياً بواسطة خوادم GitHub Actions بنجاح وبدون كاش."
         files: app/build/outputs/apk/debug/app-debug.apk
