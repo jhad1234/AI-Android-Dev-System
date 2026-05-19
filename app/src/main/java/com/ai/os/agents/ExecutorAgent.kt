@@ -11,16 +11,31 @@ class ExecutorAgent {
     }
 
     fun execute(plan: String): String {
-        val result = when {
-            plan.contains("compile", true) -> "EXEC: Building project..."
-            plan.contains("test", true) -> "EXEC: Running tests..."
-            plan.contains("deploy", true) -> "EXEC: Deploying application..."
-            plan.contains("UI", true) -> "EXEC: Initializing UI components..."
-            plan.contains("AI", true) -> "EXEC: Starting AI core systems..."
-            else -> "EXEC: Processing task..."
+
+        val actions = plan.lowercase()
+            .replace("plan", "")
+            .replace("[", "")
+            .replace("]", "")
+            .split("→", ",", ":")
+            .map { it.trim() }
+            .filter { it.isNotBlank() }
+
+        val results = actions.map { action ->
+            when {
+                "compile" in action -> "build_ok"
+                "test" in action -> "tests_ok"
+                "package" in action -> "packaged"
+                "deploy" in action -> "deployed"
+                "ui" in action -> "ui_ready"
+                "analyze" in action -> "analysis_done"
+                else -> "done"
+            }
         }
 
-        MessageBus.send("analyzer", result)
-        return result
+        val summary = results.joinToString("|")
+
+        MessageBus.send("analyzer", summary)
+
+        return summary
     }
 }
