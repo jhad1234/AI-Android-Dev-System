@@ -1,11 +1,10 @@
-#!/usr/bin/env sh
+#!/bin/sh
 
-# Ensure correct line endings and standard execution for Linux/GitHub Runners
-# This script launches the local Gradle build automation engine.
+set -e
 
-DIRNAME=$(dirname "$0")
-if [ -z "$DIRNAME" ]; then
-    DIRNAME="."
+if [ ! -f "gradle/wrapper/gradle-wrapper.jar" ]; then
+  echo "ERROR: gradle-wrapper.jar missing"
+  exit 1
 fi
 
-exec "$DIRNAME/gradle/wrapper/gradlew" "$@"
+exec java -jar gradle/wrapper/gradle-wrapper.jar "$@"
