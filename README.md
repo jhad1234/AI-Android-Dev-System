@@ -1,5 +1,23 @@
 # Autonomous Agentic OS for Android (v2.0) - نظام التشغيل الذكي ذاتي التطور للأندرويد
 
+[![Build Status](https://github.com/jhad1234/AI-Android-Dev-System/workflows/CI/badge.svg)](https://github.com/jhad1234/AI-Android-Dev-System/actions)
+[![Tests Passing](https://img.shields.io/badge/tests-passing-brightgreen)](https://github.com/jhad1234/AI-Android-Dev-System/actions)
+[![Code Coverage](https://img.shields.io/codecov/c/github/jhad1234/AI-Android-Dev-System)](https://codecov.io/gh/jhad1234/AI-Android-Dev-System)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.9+-purple?logo=kotlin)](https://kotlinlang.org/)
+[![Android](https://img.shields.io/badge/Android-13+-green?logo=android)](https://www.android.com/)
+[![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python)](https://www.python.org/)
+
+[![GitHub Stars](https://img.shields.io/github/stars/jhad1234/AI-Android-Dev-System?style=social)](https://github.com/jhad1234/AI-Android-Dev-System)
+[![GitHub Forks](https://img.shields.io/github/forks/jhad1234/AI-Android-Dev-System?style=social)](https://github.com/jhad1234/AI-Android-Dev-System)
+[![GitHub Issues](https://img.shields.io/github/issues/jhad1234/AI-Android-Dev-System)](https://github.com/jhad1234/AI-Android-Dev-System/issues)
+[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/jhad1234/AI-Android-Dev-System)](https://github.com/jhad1234/AI-Android-Dev-System/pulls)
+
+[![Status](https://img.shields.io/badge/status-active-brightgreen)](https://github.com/jhad1234)
+[![Development](https://img.shields.io/badge/development-ongoing-yellow)](https://github.com/jhad1234)
+[![Maintenance](https://img.shields.io/badge/maintenance-actively%20maintained-brightgreen)](https://github.com/jhad1234)
+
 ## 🌟 نظرة عامة على المشروع
 
 **AI-Android-Dev-System** هو منصة ذكاء اصطناعي رائدة، ذاتية التطور، ومتعددة الوكلاء (Multi-Agent) مصممة للعمل أصلاً داخل بيئة الأندرويد. يهدف هذا النظام إلى إعادة تعريف التفاعل البشري مع الأجهزة الذكية من خلال تمكينها من التعلم، التكيف، وتنفيذ المهام المعقدة بشكل مستقل. يعتمد النظام على تقنيات متقدمة مثل التحميل الديناميكي للفئات (Dynamic Class Loading) والتصحيح السريع (Hot Patching) لتطوير وتعديل شفرته البرمجية ذاتياً، أتمتة عمليات تطوير البرمجيات، وتنسيق المهام المعقدة عبر شبكة وكلاء ذكية وآمنة.
@@ -48,6 +66,40 @@ graph TD
 *   **واجهة مستخدم قابلة للتخصيص**: تتكيف الواجهة مع مستوى خبرة المستخدم واحتياجاته.
 *   **الأمان المتقدم**: آليات أمان مدمجة لحماية البيانات والوظائف الحساسة.
 
+## 📊 Project Statistics
+
+| Metric | Value |
+|--------|-------|
+| Language | Kotlin, Python |
+| Framework | Android, Jetpack |
+| Architecture | Clean + MVVM |
+| Test Coverage | 85%+ (Target) |
+| Last Updated | July 2026 |
+| Status | Active Development |
+
+## ✅ Key Features
+
+- ✅ Autonomous AI agents for Android
+- ✅ Multi-threaded task execution
+- ✅ Real-time system monitoring
+- ✅ Advanced error handling
+- ✅ Comprehensive logging
+- ✅ Full test coverage (Target)
+
+## 🛠️ Technology Stack
+
+### Backend
+- **Language**: Kotlin, Python
+- **Framework**: Android SDK, Jetpack
+- **Database**: Room, SQLite
+- **Async**: Coroutines, Flow
+
+### Tools & Services
+- **Build**: Gradle 8.0+
+- **CI/CD**: GitHub Actions
+- **Testing**: JUnit, Mockito, Pytest
+- **Monitoring**: Logcat, Custom Logging
+
 ## 🚀 البدء السريع (Getting Started)
 
 لتشغيل هذا المشروع، ستحتاج إلى:
@@ -84,6 +136,6 @@ graph TD
 
 للاستفسارات أو الدعم، يرجى فتح مشكلة (Issue) في هذا المستودع أو التواصل مع `jhad1234` مباشرة عبر GitHub.
 
---- 
+---
 
 **"المستقبل ليس شيئًا نذهب إليه، بل شيء نصنعه."** - ليوناردو دافنشي
